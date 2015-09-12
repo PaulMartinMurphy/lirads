@@ -17,9 +17,9 @@ function lirads_tracker_parse_us_date(s) {
   return new Date(v[2],v[0],v[1]);
 } // lirads_parse_us_date
 
-function lirads_tracker_compare_caption_us_date(a,b) {
-  var x = lirads_tracker_parse_us_date(a.caption);
-  var y = lirads_tracker_parse_us_date(b.caption);
+function lirads_tracker_compare_us_date(a,b) {
+  var x = lirads_tracker_parse_us_date(a.date);
+  var y = lirads_tracker_parse_us_date(b.date);
   return x.getTime() - y.getTime();
 } // lirads_compare_caption_date
 
@@ -78,13 +78,16 @@ var global_lirads_features = [
   {code:'se',label:"Segment(s)"},
   {code:'sz',label:"Size (mm)"},
   {code:'gr',label:"Growth"},
-  {code:'ah',label:"Art. hyperenh."},
+  {code:'ah',label:"APHE"},
   {code:'wa',label:"Washout"},
-  {code:'ca',label:"Capsule"}
+  {code:'ca',label:"Capsule"},
+  {code:'co',label:"Comments"}
 ]; // global_lirads_features
 
 var global_summary_features = [
-  {prefix:'ts', code:'ts',label:"Tumor stage"}
+  {prefix:'im', code:'ts',label:"Tumor stage"},
+  {prefix:'im', code:'su',label:"Summary"},
+  {prefix:'im', code:'di',label:"Discrepancy"}
 ]; // global_lirads_features
 
 var global_lirads_tracker_dates = [];
@@ -101,9 +104,12 @@ function lirads_update_data_from_records(records) {
 
     var json = records[k].json;
 
-    dates[k] = {field:('date'+k), caption:radlibs_get_path(json,'ex.da','Not specified') }
-
-
+    // make date
+    var date = radlibs_get_path(json,'ex.da','Not specified');
+    var captions = [ date ];
+    if( radlibs_has_path(json,'te.mo') ) captions.push( json.te.mo );
+    //if( RLHP(records[k],'acc') ) captions.push( records[k].acc );
+    dates[k] = {field:('date'+k), date:date, caption:captions.join(' - ') };
 
     var obs = [];
     if( RLHP(json,'ou') ) for( var i in json.ou ) { var o = json.ou[i]; o.type = 'Untreated'; obs.push(o); }
@@ -155,7 +161,7 @@ function lirads_update_data_from_records(records) {
 
   latest_lrcat[ix] = {time:0,lrcat:"unk"};
 
-  dates.sort(lirads_tracker_compare_caption_us_date);
+  dates.sort(lirads_tracker_compare_us_date);
 
   global_lirads_tracker_dates = dates;
   global_lirads_tracker_data  = data;
