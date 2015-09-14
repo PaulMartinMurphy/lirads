@@ -85,14 +85,24 @@ var global_lirads_features = [
 ]; // global_lirads_features
 
 var global_summary_features = [
+  {prefix:'oa', code:'lr', label:"Agg. LI-RADS"},
+  {prefix:'oa', code:'lo', label:"Agg. location"},
+  {prefix:'oa', code:'se', label:"Agg. segment"},
+  {prefix:'oa', code:'ca', label:"Agg. type"},
+  {prefix:'oa', code:'sz', label:"Agg. size"},
   {prefix:'im', code:'ts',label:"Tumor stage"},
   {prefix:'im', code:'su',label:"Summary"},
-  {prefix:'im', code:'di',label:"Discrepancy"}
+  {prefix:'im', code:'di',label:"Discrepancy"},
+  {prefix:'xx', code:'attending',label:"Attending"}
 ]; // global_lirads_features
 
 var global_lirads_tracker_dates = [];
 var global_lirads_tracker_data  = {};
 var global_lirads_tracker_latest_lrcat = {};
+
+function lirads_exclude_feature(obs,code) {
+  return obs.type === 'Treated' && code === 'lr';
+} // lirads_exclude_feature
 
 function lirads_update_data_from_records(records) {
 
@@ -122,16 +132,24 @@ function lirads_update_data_from_records(records) {
         var ix = obs[i].ix;
         if( !RLHP(data,ix) ) data[ix] = {};
         for( var j in global_lirads_features ) {
-          if( RLHP(obs[i],global_lirads_features[j].code) ) {
+          var code = global_lirads_features[j].code;
+
+          if( RLHP(obs[i],code) ) {
             if( !RLHP(data[ix],j) ) data[ix][j] = {};
-            data[ix][j].code      = global_lirads_features[j].code;
-            data[ix][j]['date'+k] = obs[i][global_lirads_features[j].code];
+
+            if( !lirads_exclude_feature(obs[i],code) ) {
+
+              data[ix][j].code      = code;
+              data[ix][j]['date'+k] = obs[i][code];
+
+            }
+
           }
         } // j
 
         var lrcat = lirads_tracker_get_lrcat(obs[i]);
         if( lrcat != '' ) {
-          var cur_time = lirads_tracker_parse_us_date(dates[k].caption).getTime();
+          var cur_time = lirads_tracker_parse_us_date(dates[k].date).getTime();
           if( !RLHP(latest_lrcat,ix) ) {
             latest_lrcat[ix] = {time:cur_time, lrcat:lrcat};
           } else {
@@ -148,11 +166,20 @@ function lirads_update_data_from_records(records) {
     for( var j in global_summary_features ) {
       var prefix = global_summary_features[j].prefix;
       var code   = global_summary_features[j].code;
-      if( RLHP(json,prefix) && RLHP(json[prefix],code) ) {
+
+      var is_attending = (code === "attending");
+      if( (RLHP(json,prefix) && RLHP(json[prefix],code)) || is_attending ) {
         if( !RLHP(data,ix))    data[ix] = {};
         if( !RLHP(data[ix],j)) data[ix][j] = {};
-        data[ix][j].code = global_summary_features[j].code;
-        data[ix][j]['date'+k] = json[prefix][code];
+
+        data[ix][j].code = code;
+
+        if( is_attending ) {
+          data[ix][j]['date'+k] = records[k].attending;
+        } else {
+          data[ix][j]['date'+k] = json[prefix][code];
+        }
+
       }
     } // j
 
