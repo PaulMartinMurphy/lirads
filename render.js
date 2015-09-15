@@ -289,6 +289,7 @@ function radlibs_render(json, update_form) {
 		'Varices: {{hv.va_helper}}{{^hv.va}}None{{/hv.va}}\n' +
 		'{{ #hv.sr }}Splenorenal shunt: {{ hv.sr }}\n{{/hv.sr}}' +
 		'{{ #hv.rp }}Recanalized periumbilical vein: {{ hv.rp }}\n{{/hv.rp}}' +
+		'{{ #hv.ti }}TIPS Shunt: {{ hv.ti }}\n{{/hv.ti}}' +
 		'Comments:{{# li.co }} {{li.co}}{{/li.co}}{{# hv.co}} {{hv.co}}{{/hv.co}}{{^li.co}}{{^hv.co}} None{{/hv.co}}{{/li.co}}\n' +
 		'\n';
 	rval += Mustache.to_html(template,json);
@@ -390,7 +391,7 @@ function radlibs_render(json, update_form) {
 	rval += '' + (++n) + '. ';
 	if( RLHP(json,'oa') || RLHP(json,'ou') || RLHP(json,'ot') ) {
 		rval += "LI-RADS Observations:\n";
-		
+
 		template =  "Aggregate observation, {{ lr }}{{^lr}}LR not specified{{/lr}}\n";
 		if( RLHP(json,'oa') ) rval += Mustache.to_html(template, json.oa);
 

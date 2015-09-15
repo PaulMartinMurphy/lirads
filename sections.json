@@ -34,6 +34,7 @@
     {"label":"Varices","code":"va","type":"enum","items":["Esophageal","Paraesophageal","Gastric","Perigastric","Perisplenic","Porta hepatis"]},
     {"label":"Splenorenal shunt","code":"sr","type":"list","items":["Yes","No"]},
     {"label":"Recanal. periumb. vein","code":"rp","type":"list","items":["Yes","No"]},
+    {"label":"TIPS","code":"ti","type":"list","items":["Patent","Occluded"]},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
   {"label":"Untreated Observation","prefix":"ou","short_label":"Obs","serial":["1","2","3","4","5","6","7","8","9","10"],"fields":[
@@ -93,7 +94,7 @@
     {"label":"Size (cm)","code":"sz","type":"int"},
     {"label":"Comments","code":"co","type":"text"}
   ]},
-  {"label":"Lymph nodes","prefix":"ln","short_label":"Node","serial":["1","2","3"],"hide":true,"fields":[
+  {"label":"Lymph nodes","prefix":"ln","short_label":"Node","serial":["1","2","3","4","5"],"hide":true,"fields":[
     {"label":"Location","code":"lo","type":"combo","items":["Porta hepatis","Gastrohepatic ligament","Cardiophrenic","Left paraortic","Right paraortic","Mesenteric"],"size":20,"rotate":"0deg"},
     {"label":"Series:Image","code":"sn","type":"seriesimage"},
     {"label":"Size (mm x mm)","code":"sz","type":"sizexsize", "prior_goto":"ps"},
