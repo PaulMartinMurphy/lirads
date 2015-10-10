@@ -102,12 +102,12 @@
     {"label":"Comments","code":"co","type":"text","rotate":"0deg","width":"16em"}
   ]},
   {"label":"Impression","prefix":"im","fields":[
-    {"label":"Summary","code":"su","type":"textarea"},
+    {"label":"Summary","code":"su","type":"textarea","prior_goto":""},
     {"label":"Suggested T-stage","code":"st","type":"text","disabled":true},
     {"label":"T-stage","code":"ts","type":"list","items":["None","T1","T2","T3","T4a","T4b"]},
-    {"label":"Recommendations","code":"re","type":"combo","items":["Discussion at tumor board"]},
-    {"label":"Additional impressions","code":"ad","type":"textarea"},
-    {"label":"Discrepancy","code":"di","type":"list","items":["Yes","No"] }
+    {"label":"Recommendations","code":"re","type":"combo","items":["Discussion at tumor board"],"prior_goto":""},
+    {"label":"Additional impressions","code":"ad","type":"textarea","prior_goto":""},
+    {"label":"Discrepancy","code":"di","type":"list","items":["Yes","No"],"prior_goto":"" }
   ]},
   {"label":"Feedback","prefix":"fe","fields":[
     {"label":"Comments","code":"co","type":"textarea"}
