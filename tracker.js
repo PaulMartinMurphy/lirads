@@ -52,8 +52,8 @@ function lirads_tracker_get_color_for_lrcat(lrcat) {
   } else if( lrcat === 'Resolved' ) {
       return 'lightgray';
   } else {
-    console.log('unrecognized lrcat:');
-    console.log(lrcat);
+    //console.log('unrecognized lrcat:');
+    //console.log(lrcat);
   }
 
   return 'black';
@@ -194,7 +194,7 @@ function lirads_update_data_from_records(records) {
   global_lirads_tracker_data  = data;
   global_lirads_tracker_latest_lrcat = latest_lrcat;
 
-  console.log(latest_lrcat);
+  //console.log(latest_lrcat);
 
 } // lirads_tracker_update_data_from_json
 
@@ -281,9 +281,9 @@ function lirads_database_query_remote() {
 	var mrn  = $('#lirads-mrn').val();
 	var slug = "lirads";
 
-  console.log('lirads_database_query_remote');
-  console.log(mrn);
-  console.log(slug);
+  //console.log('lirads_database_query_remote');
+  //console.log(mrn);
+  //console.log(slug);
 
 	$('#radlibs-query-mrn').val( mrn );
 	$('#radlibs-query-slug').val( slug );
@@ -295,8 +295,8 @@ function lirads_database_query_remote() {
 		data: f.serialize(),
 		//async: false,
 		success: function (data) {
-      console.log('success');
-      console.log(data);
+      //console.log('success');
+      //console.log(data);
 			lirads_database_set_records( JSON.parse(data) );
 		},
 		error: function(data) {
@@ -330,7 +330,7 @@ function lirads_database_on_select() {
   for( var i in recids ) {
     var record = w2ui['database_grid'].get(recids[i]);
     records.push( record );
-    console.log(record);
+    //console.log(record);
   }
 
   lirads_update_data_from_records(records);
@@ -514,6 +514,8 @@ function radlibs_app_init() {
 
   window.onresize = lirads_on_resize_window;
   lirads_on_resize_window();
+
+  window.onbeforeunload = function(){ return 'You can reload the information from the database instead.'; };
 
 } // lirads_app_init
 
