@@ -370,6 +370,24 @@ function lirads_tracker_showhide(event) {
     }
 } //
 
+
+function lirads_database_synch_mrn(event) {
+
+  $.ajax({
+  		type: 'GET',
+  		url:  '/synch/getmrnacc/',
+  		data: '',
+  		success: function (data) {
+  			mrnacc = JSON.parse(data)
+        $('#lirads-mrn').val(mrnacc.mrn);
+        lirads_database_query_remote();
+  		},
+  		error: function(data) {
+  			radlibs_popup('Failed to synchronize MRN');
+  		}
+  	});
+}
+
 function radlibs_app_init() {
 
   radlibs_toolbar('main',[
@@ -429,6 +447,7 @@ function radlibs_app_init() {
     { type: 'break', id: 'break_bottom' },
     //{ type: 'button', id: 'database',  caption: 'Download',  onClick:lirads_tracker_json_database,  hint:'Download strings from remote database' },
     //{ type: 'html',   id: 'mrn', html: 'MRN: <input id="lirads-tracker-mrn" size="10"></input>', hint:'Specify the medical record number'}
+    { type: 'button', id: 'synch', caption: 'Synch', onClick:lirads_database_synch_mrn, hint:'Synchronize MRN'},
     { type:'html', id:'mrn', html:'MRN:<input id="lirads-mrn" size="10" style="padding: 3px; border-radius: 25px; border: 1px solid silver" onchange="lirads_database_query_remote();"/>' }
   ]);
   w2ui['layout'].showToolbar('bottom');
