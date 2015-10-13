@@ -76,6 +76,7 @@ var global_lirads_features = [
   {code:'sr',label:"Susp. recur."},
   {code:'lr',label:"LI-RADS Cat."},
   {code:'se',label:"Segment(s)"},
+  {code:'sn',label:"Series:Image"},
   {code:'sz',label:"Size (mm)"},
   {code:'gr',label:"Growth"},
   {code:'ah',label:"APHE"},
@@ -423,7 +424,7 @@ function radlibs_app_init() {
       var record = this.records[ event.recid ];
       if (w2ui.hasOwnProperty(name)) w2ui[name].destroy();
       var records = lirads_tracker_get_feature_records_from_data( record )
-      $('#'+ event.box_id).css({ margin: '0px', padding: '0px', width: '100%' }).animate({ height: '' + (26*records.length) + 'px' }, 100);
+      $('#'+ event.box_id).css({ margin: '0px', padding: '0px', width: '100%' }).animate({ height: '' + (26*(records.length+1)) + 'px' }, 100);
       setTimeout(function () {
         $('#'+ event.box_id).w2grid({
           name: name,
