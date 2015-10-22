@@ -1,77 +1,83 @@
 [
-  {"label":"Exam","prefix":"ex","fields":[
+  {"label":"Dates","prefix":"ex","fields":[
     {"label":"Date","code":"da","type":"us-date","w2field_type":"date", "prior_goto":"pd"},
     {"label":"Prior date","code":"pd","type":"us-date","w2field_type":"date"}
   ]},
   {"label":"Technique","prefix":"te","fields":[
-    {"label":"Modality","code":"mo","type":"list","items":["CT","MR","US"],"prior_goto":""},
+    {"label":"Modality","code":"mo","type":"list","items":["CT","MR"],"prior_goto":""},
+    {"label":"Field strength (T)","code":"fi","type":"list","items":["1.5", "3.0"],"prior_goto":""},
     {"label":"Contrast","code":"cn","type":"combo","items":["None","Omnipaque","Visipaque","Magnevist","Multihance","Eovist","Gadavist"],"prior_goto":""},
     {"label":"Rate of injection (mL/s)","code":"rc","type":"int","prior_goto":""},
     {"label":"Volume of contrast (mL)","code":"vc","type":"int","prior_goto":""},
-    {"label":"Quality","code":"qu","type":"list","items":["Limited","Acceptable"],"prior_goto":""},
     {"label":"Comments","code":"co","type":"textarea","prior_goto":""}
   ]},
   {"label":"Liver","prefix":"li","fields":[
     {"label":"Morphology","code":"mo","type":"list","items":["Unremarkable","Nodular"]},
-    {"label":"Cirrhosis","code":"ci","type":"list","items":["No","Possible","Likely","Definite"]},
-    {"label":"Steatosis","code":"st","type":"list","items":["No","Possible","Likely","Definite"]},
-    {"label":"Iron overload","code":"fe","type":"list","items":["No","Possible","Likely","Definite"]},
-    {"label":"Ascites","code":"as","type":"list","items":["None","Small","Moderate","Massive"]},
+    {"label":"Cirrhosis","code":"ci","type":"list","items":["No","Yes"]},
+    {"label":"Ascites","code":"as","type":"list","items":["None","Trace","Small","Moderate","Massive"]},
+    {"label":"CT number (HU)","code":"hu","type":"int"},
+    {"label":"PDFF (%)","code":"st","type":"int"},
+    {"label":"R2* (1/s)","code":"fe","type":"int"},
+    {"label":"Comments","code":"co","type":"textarea"}
+  ]},
+  {"label":"Biliary","prefix":"bi","fields":[
+    {"label":"Cholelithiasis","code":"gs","type":"list","items":["No","Yes"]},
+    {"label":"GB wall thickening","code":"wt","type":"list","items":["No","Yes"]},
+    {"label":"Pericholecystic fluid","code":"pf","type":"list","items":["No","Yes"]},
+    {"label":"Acute cholecystitis","code":"ac","type":"list","items":["No","Yes"]},
+    {"label":"Intrahepatic bil. dil.","code":"id", "type":"textarea"},
+    {"label":"Extrahepatic bil. dil.","code":"ed", "type":"list", "item":["No","Yes"]},
+    {"label":"CBD diameter","code":"cb", "type":"int"},
+    {"label":"Choledocolithiasis","code":"cd","type":"list","items":["No","Yes"]},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
   {"label":"Vasculature","prefix":"hv","width":"16em","fields":[
-    {"label":"Hep. art. anatomy","code":"ha","type":"enum","items":["Standard","Replaced RHA","Accessory RHA","Replaced LHA","Accessory LHA"]},
-    {"label":"Portal veins", "code":"pv", "type":"enum","items":[ "Patent",
-      "MPV patent","MPV compressed","MPV abutted","MPV not invaded","MPV invaded","MPV occluded","MPV cav trans",
-      "RPV patent","RPV compressed","RPV abutted","RPV not invaded","RPV invaded","RPV occluded","RPV cav trans",
-      "LPV patent","LPV compressed","LPV abutted","LPV not invaded","LPV invaded","LPV occluded","LPV cav trans"
-    ]},
-    {"label":"Hepatic veins", "code":"hv", "type":"enum","items":[ "Patent",
-      "MHV patent","MHV compressed","MHV abutted","MHV not invaded","MHV invaded","MHV occluded",
-      "RHV patent","RHV compressed","RHV abutted","RHV not invaded","RHV invaded","RHV occluded",
-      "LHV patent","LHV compressed","LHV abutted","LHV not invaded","LHV invaded","LHV occluded"
-    ]},
-    {"label":"Varices","code":"va","type":"enum","items":["Esophageal","Paraesophageal","Gastric","Perigastric","Perisplenic","Porta hepatis"]},
-    {"label":"Splenorenal shunt","code":"sr","type":"list","items":["Yes","No"]},
-    {"label":"Recanal. periumb. vein","code":"rp","type":"list","items":["Yes","No"]},
+    {"label":"Hep. art. anatomy","code":"ha","type":"combo","items":["Standard","Replaced RHA","Accessory RHA","Replaced LHA","Accessory LHA"]},
+    {"label":"Portal veins", "code":"pv", "type":"textarea"},
+    {"label":"MPV diameter", "code":"md", "type":"int"},
+    {"label":"Hepatic veins", "code":"hv", "type":"textarea"},
     {"label":"TIPS","code":"ti","type":"list","items":["Patent","Occluded"]},
+    {"label":"Varices","code":"va","type":"enum","items":["Submucosal esophageal","Paraesophageal","Gastric","Perigastric","Perisplenic","Porta hepatis"]},
+    {"label":"Splenorenal shunt","code":"sr","type":"list","items":["No","Yes"]},
+    {"label":"Recan. periumb. vein","code":"rp","type":"list","items":["No","Yes"]},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
   {"label":"Untreated Observation","prefix":"ou","short_label":"Obs","serial":["1","2","3","4","5","6","7","8","9","10"],"fields":[
     {"label":"Index","code":"ix","type":"int"},
-    {"label":"LI-RADS Category","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-5M"]},
+    {"label":"LI-RADS Category","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-M"]},
     {"label":"Suggested LR","code":"su","type":"text","disabled":true},
     {"label":"Segment(s)","code":"se","type":"enum","items":["1","2","3","4a","4b","5","6","7","8"],"rotate":"0deg"},
     {"label":"Series:Image","code":"sn","type":"text","w2field_type":"seriesimage"},
     {"label":"Size (mm x mm)","code":"sz","type":"sizexsize","prior_goto":"ps"},
     {"label":"Prior Size (mm x mm)","code":"ps","type":"sizexsize"},
-    {"label":"Growth","code":"gr","type":"list","items":["Threshold","Subthreshold","Stable","Smaller"],"width":"8em","prior_goto":""},
-    {"label":"Suggested Growth","code":"sg","type":"text","disabled":true,"width":"8em"},
+    {"label":"Stability","code":"gr","type":"list","items":["New since prior","Threshold growth","Subthreshold growth","Stable size","Smaller size","Not seen now"],"width":"8em","prior_goto":""},
+    {"label":"Suggested stab.","code":"sg","type":"text","disabled":true,"width":"8em"},
     {"label":"APHE","code":"ah","type":"list","items":["Yes","No","New"]},
     {"label":"Washout","code":"wa","type":"list","items":["Yes","No","New"]},
     {"label":"Capsule","code":"ca","type":"list","items":["Yes","No","New"]},
     {"label":"Tumor in vein","code":"tv","type":"list","items":["Yes","No","New"]},
     {"label":"Non-HCC Malig.","code":"nm","type":"list","items":["Yes","No"]},
     {"label":"Ancillary features","code":"af","type":"enum","items":[
-      "Hepatobiliary phase hypointensity (MR)","Mild-moderate T2 hyperintensity (MR)","Restricted diffusion (MR)","Distinctive rim","Corona enhancement",
-      "Mosaic architecture","Nodule-in-nodule architecture","Intra-lesional fat","Lesional iron sparing (MR)","Lesional fat sparing","Blood products",
-      "Homogeneous marked T2 hyperintensity (MR, benign feature)","Homogeneous marked T2 or T2* hypointensity (MR, benign feature)","Hepatobiliary phase isointensity (MR, benign feature)","Undistorted vessels (benign feature)",
-      "Parallels blood pool enhancement (benign feature)"],"rotate":"0deg","width":"16em"},
+      "Hepatobiliary phase hypointensity (MR)","Mild-moderate T2 hyperintensity","Restricted diffusion","Distinctive rim","Corona enhancement",
+      "Mosaic architecture","Nodule-in-nodule architecture","Intra-lesional fat","Lesional iron sparing","Lesional fat sparing","Blood products",
+      "Homogeneous marked T2 hyperintensity","Homogeneous marked T2 or T2* hypointensity","Hepatobiliary phase isointensity","Undistorted vessels",
+      "Parallels blood pool enhancement"],"rotate":"0deg","width":"16em"},
     {"label":"Comments","code":"co","type":"text","rotate":"0deg"}
   ]},
   {"label":"Treated Observation","prefix":"ot","short_label":"Obs","serial":["1","2","3","4","5","6","7","8","9","10"],"fields":[
     {"label":"Index","code":"ix","type":"int"},
-    {"label":"Pre-Rx LI-RADS Cat.","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-5M"]},
-    {"label":"Susp. for recurrence","code":"sr","type":"list","items":["Low","Moderate","High"]},
+    {"label":"Pre-Rx LI-RADS Cat.","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-M"]},
+    {"label":"Susp. for recurrence","code":"sr","type":"list","items":["Low","Intermediate","High"]},
     {"label":"Segment(s)","code":"se","type":"enum","items":["1","2","3","4a","4b","5","6","7","8"],"rotate":"0deg"},
     {"label":"Series:Image","code":"sn","type":"seriesimage"},
     {"label":"APHE size (mm x mm)","code":"sz","type":"sizexsize","prior_goto":"ps"},
-    {"label":"Prior APHE size (mm x mm)","code":"ps","type":"sizexsize"},
-    {"label":"Cavity size(mm x mm)","code":"cs","type":"sizexsize"},
+    {"label":"Residual APHE (%)","code":"ps","type":"int"},
+    {"label":"Cavity size (mm x mm)","code":"cs","type":"sizexsize"},
     {"label":"Comments","code":"co","type":"text","rotate":"0deg","width":"16em"}
   ]},
   {"label":"Resolved Observation","prefix":"or","short_label":"Obs","serial":["1","2","3","4","5","6","7","8","9","10"],"fields":[
     {"label":"Index","code":"ix","type":"int"},
+    {"label":"Segment(s)","code":"se","type":"enum","items":["1","2","3","4a","4b","5","6","7","8"],"rotate":"0deg"},
     {"label":"Resolution Date","code":"rd","type":"us-date","w2field_type":"date"},
     {"label":"Comments","code":"co","type":"text","rotate":"0deg","width":"16em"}
   ]},
@@ -87,27 +93,25 @@
       "Mosaic architecture","Nodule-in-nodule architecture","Intra-lesional fat","Lesional iron sparing (MR)","Lesional fat sparing","Blood products",
       "Homogeneous marked T2 hyperintensity (MR, benign feature)","Homogeneous marked T2 or T2* hypointensity (MR, benign feature)","Hepatobiliary phase isointensity (MR, benign feature)","Undistorted vessels (benign feature)",
       "Parallels blood pool enhancement (benign feature)"]},
-    {"label":"LI-RADS Category","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-5M"]},
+    {"label":"LI-RADS Category","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-M"]},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
   {"label":"Spleen","prefix":"sp","fields":[
     {"label":"Size (cm)","code":"sz","type":"int"},
     {"label":"Comments","code":"co","type":"text"}
   ]},
-  {"label":"Lymph nodes","prefix":"ln","short_label":"Node","serial":["1","2","3","4","5"],"hide":true,"fields":[
-    {"label":"Location","code":"lo","type":"combo","items":["Porta hepatis","Gastrohepatic ligament","Cardiophrenic","Left paraortic","Right paraortic","Mesenteric"],"size":20,"rotate":"0deg"},
+  {"label":"Lymph nodes","prefix":"ln","short_label":"Node","serial":["1","2","3","4","5"],"fields":[
+    {"label":"Location","code":"lo","type":"combo","items":["Porta hepatis","Gastrohepatic","Cardiophrenic","Left paraortic","Right paraortic","Mesenteric"],"size":20,"rotate":"0deg"},
     {"label":"Series:Image","code":"sn","type":"seriesimage"},
     {"label":"Size (mm x mm)","code":"sz","type":"sizexsize", "prior_goto":"ps"},
     {"label":"Prior size (mm x mm)","code":"ps","type":"sizexsize"},
     {"label":"Comments","code":"co","type":"text","rotate":"0deg","width":"16em"}
   ]},
   {"label":"Impression","prefix":"im","fields":[
-    {"label":"Summary","code":"su","type":"textarea","prior_goto":""},
     {"label":"Suggested T-stage","code":"st","type":"text","disabled":true},
-    {"label":"T-stage","code":"ts","type":"list","items":["None","T1","T2","T3","T4a","T4b"]},
-    {"label":"Recommendations","code":"re","type":"combo","items":["Discussion at tumor board"],"prior_goto":""},
-    {"label":"Additional impressions","code":"ad","type":"textarea","prior_goto":""},
-    {"label":"Discrepancy","code":"di","type":"list","items":["Yes","No"],"prior_goto":"" }
+    {"label":"T-stage","code":"ts","type":"list","items":["Not applicable","T1","T2","T3","T4a","T4b"]},
+    {"label":"Recommendations","code":"re","type":"combo","items":["Discussion at liver cancer group","Per hepatology","Per interventional radiology"],"prior_goto":""},
+    {"label":"Additional impressions","code":"ad","type":"textarea","prior_goto":""}
   ]},
   {"label":"Feedback","prefix":"fe","fields":[
     {"label":"Comments","code":"co","type":"textarea"}
