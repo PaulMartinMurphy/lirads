@@ -2,6 +2,20 @@
 // (c) 2015 Paul Murphy
 //
 
+Mustache.escape = function (value) {
+    return value;
+};
+
+function radlibs_compare(a,b) {
+	if( a === b ) {
+		return 'eq';
+	} else if( a > b ) {
+		return 'gt';
+	} else {
+		return 'lt';
+	}
+} // radlibs_compare
+
 function lirads_get_max_size(sizexsize) {
 	return Math.max.apply(null,radlibs_apply(sizexsize.split('x'),parseInt));
 } // lirads_max_size
@@ -201,6 +215,46 @@ function lirads_seriesimage_helper(obs) {
 
 } // lirads_seriesimage_helper
 
+/*
+function lirads_untreated_helper(obs) {
+
+	var feature_labels = {
+		'ah':'arterial phase hyperenhancement',
+		'wa':'washout',
+		'ca':'capsule',
+		'tv':'tumor in vein'};
+
+	var pos_features = [];
+	var neg_features = [];
+	var new_features = [];
+
+	for( var j in feature_labels ) {
+		if( RLHP(obs,j) ) {
+			if( obs[j] === 'Yes' ) {
+				pos_features.push( feature_labels[j] );
+			} else if( obs[j] === 'New' ) {
+				pos_features.push( feature_labels[j] );
+				new_features.push( 'new ' + feature_labels[j] );
+			} else if( obs[j] === 'No' ) {
+				neg_features.push( 'no ' + feature_labels[j] );
+			}
+		}
+	}
+
+	if( (pos_features.length + neg_features.length) > 0 ) {
+		obs['mf_helper'] = radlibs_conjunction( pos_features.concat(neg_features), 'not specified' );
+	}
+	if( new_features.length > 0 ) {
+		obs['nf_helper'] = radlibs_conjunction( new_features, 'not specified' );
+	}
+	if( RLHP(obs,'af') ) {
+		obs['af_helper'] = radlibs_conjunction( radlibs_uncapitalize(obs['af']) );
+	}
+
+} // lirads_features_helper
+*/
+
+
 function lirads_untreated_helper(obs) {
 
 	var feature_labels = {
@@ -256,33 +310,123 @@ function lirads_aggregate_helper(obs) {
 
 } // lirads_aggregate_features_helper
 
+function lirads_festhu_helper(json) {
+
+	var LIRADS_MR_PDFF_THRESHOLD     = 4;
+	var LIRADS_CT_HU_THRESHOLD       = 40;
+	var LIRADS_3_0T_R2STAR_THRESHOLD = 90;
+	var LIRADS_1_5T_R2STAR_THRESHOLD = 60;
+
+	if( radlibs_has_path(json,'li.st') && radlibs_get_path(json,'te.mo','') === "MR") {
+		json['li']['st_helper'] = {
+			'lt':"No hepatic steatosis",
+			'eq':"Borderline hepatic steatosis",
+			'gt':"Hepatic steatosis" }[radlibs_compare(parseInt(json.li.st),LIRADS_MR_PDFF_THRESHOLD) ] +
+			", PDFF " + json.li.st + "%. ";
+	}
+
+	if( radlibs_has_path(json,'li.hu') && radlibs_get_path(json,'te.mo','') === "CT") {
+
+		json['li']['hu_helper'] = "";
+		if( parseInt(json.li.hu) > LIRADS_CT_HU_THRESHOLD ) {
+			json.li.hu_helper += "Borderline hepatic steatosis, ";
+		} else if( parseInt(json.li.hu) > LIRADS_CT_HU_THRESHOLD ) {
+			json.li.hu_helper += "Hepatic steatosis, ";
+		} else {
+			json.li.hu_helper += "No hepatic steatosis, ";
+		}
+		json.li.hu_helper += "liver measures " + json.li.hu + " HU. ";
+	}
+
+	if( radlibs_has_path(json,'li.fe') && radlibs_get_path(json,'te.mo','') === "MR") {
+		json['li']['fe_helper'] = "";
+		if( (radlibs_has_path(json,"te.fs") && json.te.fs === "3.0" && parseInt(json.li.fe) === LIRADS_3_0T_R2STAR_THRESHOLD) ||
+				(radlibs_has_path(json,"te.fs") && json.te.fs === "1.5" && parseInt(json.li.fe) === LIRADS_1_5T_R2START_THRESHOLD)) {
+			json.li.fe_helper += "Borderline hepatic iron overload, ";
+		} else if( (radlibs_has_path(json,"te.fs") && json.te.fs === "3.0" && parseInt(json.li.fe) > LIRADS_3_0T_R2STAR_THRESHOLD) ||
+							(radlibs_has_path(json,"te.fs") && json.te.fs === "1.5" && parseInt(json.li.fe) > LIRADS_1_5T_R2START_THRESHOLD)) {
+			json.li.fe_helper += "Hepatic iron overload, ";
+		} else {
+			json.li.fe_helper += "No hepatic iron overload, ";
+		}
+		json.li.fe_helper += "R2* " + json.li.fe + " 1/s. ";
+	}
+
+} // lirads_festhu_helper
+
+function lirads_compare_index(a,b) {
+ var ia = parseInt(radlibs_get_path(a,'ix','0'));
+ var ib = parseInt(radlibs_get_path(b,'ix','0'));
+ return ia - ib;
+} // radlibs_compare_ix
+
 function radlibs_render(json, update_form) {
 
 	var rval = '';
 	var template;
 
-	if( radlibs_has_path(json,'li.ci') && json.li.ci === "Yes") json['li']['ci_helper'] = " consistent with cirrhosis.";
-	if( radlibs_has_path(json,'li.st') ) json['li']['st_helper'] = "PDFF " + json.li.st + " %";
-	if( radlibs_has_path(json,'li.fe') ) json['li']['fe_helper'] = "R2* " + json.li.fe + " 1/s";
-	if( radlibs_has_path(json,'hv.va') ) json['hv']['va_helper'] = radlibs_conjunction( radlibs_uncapitalize(json.hv.va) ) + ".";
-	if( radlibs_has_path(json,'hv.sr') && json.hv.sr === "Yes" ) json['hv']['sr_helper'] = "Splenorenal shunt.";
-	if( radlibs_has_path(json,'hv.rp') && json.hv.rp === "Yes" ) json['hv']['rp_helper'] = "Recanalized periumbilical vein.";
-	if( radlibs_has_path(json,'hv.ti') ) json['hv']['ti_helper'] = "TIPS " + radlibs_uncapitalize(json.hv.ti) + ".";
+	// TECHNIQUE SECTION
+
+	//"Multiple {{ te.mo }}{{# te.mo }} {{/te.mo}}images of the abdomen were obtained{{#te.cn}} after the intravenous administration of {{#te.vc}}{{ te.vc }} mL of {{/te.vc}}{{ te.cn }} contrast{{ #te.rc }} at {{ te.rc }} mL/sec{{/te.rc}}{{/te.cn}}. {{ te.co }}\n" +
+	//"\n";
+
+	var temo = radlibs_get_path(json,'te.mo','');
+	if( temo === "CT" ) {
+		template =
+			"TECHNIQUE:\n" +
+			"COVERAGE: Abdomen\n" +
+			"IV CONTRAST: {{# te.vc }}{{ te.vc }} mL {{/ te.vc}}{{ te.cn}}{{^ te.cn }}Omnipaque{{/ te.cn}}{{ #te.rc }} at {{ te.rc }} mL/sec{{/te.rc}}\n" +
+			"PHASES ACQUIRED: Noncontrast, arterial, portal venous, delayed\n" +
+			"ORAL CONTRAST GIVEN: No\n" +
+			"ADVERSE EVENTS: None\n" +
+			"RECONSTRUCTIONS: Axial 3.75 mm and sagittal/coronal 3 mm\n" +
+			"{{# te.co }}COMMENTS: {{te.co }}\n{{/te.co}}" +
+			"\n\n";
+		rval += Mustache.to_html(template,json);
+	} else if( temo === "MR" ) {
+		template =
+			"TECHNIQUE:\n" +
+			"SCANNER: {{# te.fs }}{{ te.fs }} Tesla {{/ te.fs }}superconducting magnet\n" +
+			"COVERAGE: Abdomen\n" +
+			"IV CONTRAST: {{# te.vc }}{{ te.vc }} mL {{/ te.vc}} {{ te.cn}}{{^ te.cn }}Gadavist{{/ te.cn}}\n" +
+			"{{ #te.rc }}RATE: {{ te.rc }} mL/sec{{/te.rc}}\n" +
+			"SEQUENCES: Multiplanar, multisequence MR images were acquired prior to and following contrast administration.\n" +
+			"{{# te.co }}COMMENTS: {{te.co }}\n{{/te.co}}" +
+			"\n\n";
+		rval += Mustache.to_html(template,json);
+  }
+
+	// FINDINGS SECTION
+
+	if( radlibs_has_path(json,'li.ci') && json.li.ci === "Yes") json['li']['ci_helper'] = "consistent with cirrhosis. ";
+
+
+	lirads_festhu_helper(json);
+
+	if( radlibs_has_path(json,'hv.va') ) json['hv']['va_helper'] = radlibs_conjunction( radlibs_uncapitalize(json.hv.va) ) + ". ";
+	if( radlibs_has_path(json,'hv.sr') && json.hv.sr === "Yes" ) json['hv']['sr_helper'] = "Splenorenal shunt. ";
+	if( radlibs_has_path(json,'hv.rp') && json.hv.rp === "Yes" ) json['hv']['rp_helper'] = "Recanalized periumbilical vein. ";
+	if( radlibs_has_path(json,'hv.ti') ) json['hv']['ti_helper'] = "TIPS " + radlibs_uncapitalize(json.hv.ti) + ". ";
+
+	// BILIARY
+	if( radlibs_has_path(json,'bi.gb') ) json['bi']['gb_helper'] = json.bi.gb.join('. ') + '. ';
+	if( radlibs_has_path(json,'bi.bd') ) json['bi']['bd_helper'] = json.bi.bd.join('. ') + '. ';
 
 	template =
-		"TECHNIQUE:\n" +
-		"Multiple {{ te.mo }}{{# te.mo }} {{/te.mo}}images of the abdomen were obtained{{#te.cn}} after the intravenous administration of {{#te.vc}}{{ te.vc }} mL of {{/te.vc}}{{ te.cn }} contrast{{ #te.rc }} at {{ te.rc }} mL/sec{{/te.rc}}{{/te.cn}}. {{ te.co }}\n" +
-		"\n" +
 		"FINDINGS:\n" +
 		"LIVER:\n" +
-		"Morphology: {{ #li.mo }} {{li.mo}} {{ li.ci_helper }} {{/li.mo}}{{^li.mo}}Unremarkable{{/li.mo}}\n" +
-		'Hepatic arterial anatomy: {{hv.ha}}{{^hv.ha}}Standard{{/hv.ha}}\n' +
-		'Portal and hepatic veins: {{ hv.pv }} {{ hv.hv }} {{^hv.pv}}{{^hv.hv}}Patent{{/hv.hv}}{{/hv.pv}} {{ hv.ti_helper }}\n' + // switch back to Portal and hepatic veins
-		'Varices: {{hv.va_helper}}{{^hv.va}}None.{{/hv.va}} {{hv.sr_helper}} {{ hv.rp_helper }}\n' +
-		'Ascites: {{li.as}}{{^li.as}}None{{/li.as}}\n' +
-		"Comments: {{ li.co }} {{ hv.co }} {{ li.st_helper }} {{ li.fe_helper }} {{# li.co }}{{# hv.co }}{{# li.st_helper }}{{# li.fe_helper }} None {{/li.fe_helper}}{{ /li.st_helper}}{{ /hv.co }}{{ /li.co }}\n" +
+		"Morphology: {{ #li.mo }}{{li.mo}} {{ li.ci_helper }}. {{/li.mo}}{{^li.mo}}No surface nodularity. {{/li.mo}}\n" +
+		'Hepatic arterial anatomy: {{hv.ha}}{{^hv.ha}}Standard. {{/hv.ha}}\n' +
+		'Portal and hepatic veins: {{ #hv.pv }}{{ hv.pv }}. {{ /hv.pv }}{{ #hv.hv }}{{ hv.hv }}. {{/hv.hv }}{{^hv.pv}}{{^hv.hv}}Patent. {{/hv.hv}}{{/hv.pv}}{{ hv.ti_helper }}\n' +
+		'{{# hv.md }}Main portal vein diameter: {{hv.md}} mm {{/ hv.md}}\n' +
+		'Varices: {{hv.va_helper}}{{^hv.va}}None. {{/hv.va}}{{hv.sr_helper}}{{ hv.rp_helper }}\n' +
+		'Ascites: {{li.as}}{{^li.as}}None. {{/li.as}}\n' +
+		"Biliary: {{ bi.gb_helper }}{{ bi.bd_helper }}{{ # bi.cb }}Common bile duct measures {{ bi.cb }} mm. {{/bi.cb}}{{ bi.co }}\n" +
+		"Comments: {{# li.co }}{{ li.co }}. {{/li.co}}{{#hv.co}}{{ hv.co }}. {{/hv.co}}{{ li.st_helper }}{{ li.hu_helper }}{{ li.fe_helper }}{{# li.co }}{{# hv.co }}{{# li.st_helper }}{{# li.fe_helper }}None {{/li.fe_helper}}{{ /li.st_helper}}{{ /hv.co }}{{ /li.co }}\n" +
 		'\n';
 	rval += Mustache.to_html(template,json);
+
+	// UNTREATED
 
 	if( RLHP(json,'ou') ) {
 		rval += 'Untreated observations:\n';
@@ -291,7 +435,7 @@ function radlibs_render(json, update_form) {
 			"Observation {{ ix }}{{^ix}}not specified{{/ix}}, {{ se_helper }}, {{sn_helper}}, Size: {{#sz}}{{ sz }} mm{{/sz}}{{^sz}}not specified{{/sz}}, {{ lr }}{{^lr}}LR not specified{{/lr}}{{#co}}, {{ co }}{{/co}}" +
 			"{{# mf_helper }}\nObservation features: {{ mf_helper }}{{ #af_helper }}. Also has {{ af_helper }}.{{/ af_helper}}{{/mf_helper}}{{^ mf_helper }}{{# af_helper }}\nObservation features: {{ af_helper}} {{/af_helper}} {{/mf_helper}}" +
 			"{{# nf_helper }}\nObservation feature stability: {{ nf_helper }}{{/nf_helper}}" +
-			"{{# gr }}\nObservation size stability: {{ gr }}{{/gr}}" +
+			"{{# gr }}\nObservation size stability: {{ gr_helper }}{{/gr}}" +
 			"\n\n";
 
 		for( var i in json['ou'] ) {
@@ -299,6 +443,8 @@ function radlibs_render(json, update_form) {
 			lirads_segments_helper(obs);
 			lirads_untreated_helper(obs);
 			lirads_seriesimage_helper(obs);
+
+			if( RLHP(obs,'gr') ) obs['gr_helper'] = radlibs_uncapitalize( obs.gr );
 
 			if( update_form ) {
 				lirads_set_suggested_category(obs,i);
@@ -316,8 +462,8 @@ function radlibs_render(json, update_form) {
 
 		template =
 			"Observation {{ ix }}{{^ix}}not specified{{/ix}}, {{ se_helper }}, {{sn_helper}}, Pre-treatment: {{ lr }}{{^lr}}LR not specified{{/lr}}, Suspicion for recurrence: {{ sr }}{{^sr}}not specified{{/sr}}{{#co}}, {{ co }}{{/co}}" +
-			"{{# sz }}\nSize of arterial phase hyperenhancement: {{ sz }} mm{{ #ps }}, was {{ ps }} mm on prior.{{/ ps }}{{/sz}}" +
-			"{{# cs }}\nSize of treatment cavity: {{ cs }} mm{{/cs}}" +
+			"{{# sz }}\nResidual arterial phase hyperenhancement: {{ sz }} mm{{ #ps }}, {{ ps }}% of initial.{{/ ps }}{{/sz}}" +
+			"{{# cs }}\nTreatment cavity: {{ cs }} mm{{/cs}}" +
 			"\n\n";
 
 		for( var i in json['ot'] ) {
@@ -345,13 +491,10 @@ function radlibs_render(json, update_form) {
 		rval += 'Resolved observations: None\n';
 	} // ot
 
-
 	if( RLHP(json,'oa')) {
 
 		var obs = json['oa'];
-
 		//obs['me_helper'] = w ? "measuring up to" : "measuring";
-
 		lirads_aggregate_helper(obs);
 
 		template = "Aggregate observation: {{ca_helper}}{{# lo_helper }}, involving the {{ lo_helper }}{{/lo_helper}}{{# se_helper }} in {{ se_helper }}{{/ se_helper }}{{# sz_helper }} {{sz_helper}},{{/sz_helper}}{{#mf_helper}}, with {{ mf_helper }}{{/mf_helper }}{{# af_helper }}, as well as {{af_helper}}{{/ af_helper }}, with LI-RADS category {{lr}}{{^lr}}not specified{{/lr}}.{{# co }} {{ co }}{{/ co }}\n\n"
@@ -360,7 +503,13 @@ function radlibs_render(json, update_form) {
 
 	var LIRADS_SPLENOMEGALY_THRESHOLD = 12; // cm
 	if( radlibs_has_path(json,'sp.sz') ) {
-		json.sp['sz_helper'] = (parseInt(json.sp.sz) > LIRADS_SPLENOMEGALY_THRESHOLD) ? 'enlarged' : 'unenlarged';
+		if( parseInt(json.sp.sz) === LIRADS_SPLENOMEGALY_THRESHOLD) {
+			json.sp['sz_helper'] = 'borderline enlarged';
+		} else if( parseInt(json.sp.sz) > LIRADS_SPLENOMEGALY_THRESHOLD) {
+			json.sp['sz_helper'] = 'enlarged';
+		} else {
+			json.sp['sz_helper'] = 'unenlarged';
+		}
 	}
 	template = "SPLEEN:{{# sp.sz }} {{ sp.sz }} cm, {{ sp.sz_helper }}.{{/ sp.sz }}{{# sp.co }} {{ sp.co }}{{/ sp.co }}{{^ sp.sz }}{{^ sp.co }} Unremarkable{{/ sp.co }}{{/sp.sz}}\n";
 	rval += Mustache.to_html(template,json);
@@ -368,9 +517,9 @@ function radlibs_render(json, update_form) {
 	rval += 'LYMPHATIC: ';
 	if( RLHP(json,'ln') ) {
 		for( var i in json['ln'] ) {
-			var node = radlibs_uncapitalize(json['ln'][i]);
-			template = "\n- {{# lo }}{{ lo }} {{/lo}}node{{# sn }} (series and image {{ sn }}){{/sn}}{{# sz }}, {{ sz }} mm {{/sz}}{{# ps }}, was {{ ps }} mm on prior{{/ps}}{{# co }}, {{co}}{{/co}}";
-			rval +=  Mustache.to_html( template, node );
+			lirads_seriesimage_helper(json['ln'][i]);
+			template = "{{# lo }}{{ lo }} {{/lo}}{{^lo}}Lymph {{/lo}}node{{# sn }} ({{sn_helper}}){{/sn}}{{# sz }}, measures {{ sz }} mm{{/sz}}{{# ps }}, was {{ ps }} mm on prior{{/ps}}{{# co }}, {{co}}{{/co}}.";
+			rval +=  Mustache.to_html( template, json['ln'][i] );
 		}
 	} else {
 		rval += "Unremarkable";
@@ -390,18 +539,35 @@ function radlibs_render(json, update_form) {
 	if( RLHP(json,'oa') || RLHP(json,'ou') || RLHP(json,'ot') ) {
 		rval += "LI-RADS Observations:\n";
 
+		var obs = [];
+
 		template =  "Aggregate observation, {{ lr }}{{^lr}}LR not specified{{/lr}}\n";
-		if( RLHP(json,'oa') ) rval += Mustache.to_html(template, json.oa);
+		if( RLHP(json,'oa') ) {
+			var ix = '0';
+			obs.push( {ix:ix, line:Mustache.to_html(template, json.oa) } );
+		}
 
 		if( RLHP(json,'ou') )	{
 			template =  "Observation {{ ix }}{{^ix}}not specified{{/ix}}, {{ lr }}{{^lr}}LR not specified{{/lr}}\n";
-			for( var i in json['ou'] ) rval += Mustache.to_html(template, json['ou'][i]);
+			for( var i in json['ou'] ) {
+				var ix = radlibs_get_path(json['ou'][i],'ix','0');
+				obs.push( {ix:ix, line:Mustache.to_html(template, json['ou'][i]) } );
+			}
+			//rval += Mustache.to_html(template, json['ou'][i]);
 		}
 
 		if( RLHP(json,'ot') ) {
 			template =  "Observation {{ ix }}{{^ix}}not specified{{/ix}}, {{#sr}}{{ sr }} suspicion for recurrence{{/sr}}{{^sr}}Suspicion for recurrence not specified{{/sr}}\n";
-			for( var i in json['ot'] ) rval += Mustache.to_html(template, json['ot'][i]);
+			for( var i in json['ot'] ) {
+				var ix = radlibs_get_path(json['ot'][i],'ix','0');
+				obs.push( {ix:ix, line:Mustache.to_html(template, json['ot'][i]) } );
+			}
 		}
+
+		obs.sort(lirads_compare_index);
+		for( var i in obs ) {
+			rval += obs[i].line;
+		} // i
 
 	} else {
 		rval += "No reportable LI-RADS observations.\n";
@@ -436,17 +602,9 @@ function radlibs_render(json, update_form) {
 		} else if( cirr && phtn.length !== 0) {
 			rval += 'Cirrhosis with sequela of portal hypertension including ' + radlibs_conjunction(phtn);
 		} else if( !cirr & phtn.length !== 0 ) {
-			rval += 'Sequela of portal hypertension including ' + radlibs_conjunction(phtn);
+			rval += radlibs_capitalize(phtn).join('. '); // Don't invoke portal hypertension
 		}
 		rval += '\n\n';
-	}
-
-	// Steatosis
-	var LIRADS_PDFF_THRESHOLD = 4;
-	var LIRADS_HU_THRESHOLD = 40;
-	if( (radlibs_has_path(json,'li.st') && parseInt(json.li.st) > LIRADS_PDFF_THRESHOLD) ||
-			(radlibs_has_path(json,'li.hu') && parseInt(json.li.hu) > LIRADS_HU_THRESHOLD) ) {
-		rval += '' + (++n) + '. Hepatic steatosis.\n\n';
 	}
 
 	// Additional impressions

@@ -5,14 +5,14 @@
   ]},
   {"label":"Technique","prefix":"te","fields":[
     {"label":"Modality","code":"mo","type":"list","items":["CT","MR"],"prior_goto":""},
-    {"label":"Field strength (T)","code":"fi","type":"list","items":["1.5", "3.0"],"prior_goto":""},
+    {"label":"Field strength (T)","code":"fs","type":"list","items":["1.5", "3.0"],"prior_goto":""},
     {"label":"Contrast","code":"cn","type":"combo","items":["None","Omnipaque","Visipaque","Magnevist","Multihance","Eovist","Gadavist"],"prior_goto":""},
     {"label":"Rate of injection (mL/s)","code":"rc","type":"int","prior_goto":""},
     {"label":"Volume of contrast (mL)","code":"vc","type":"int","prior_goto":""},
     {"label":"Comments","code":"co","type":"textarea","prior_goto":""}
   ]},
   {"label":"Liver","prefix":"li","fields":[
-    {"label":"Morphology","code":"mo","type":"list","items":["Unremarkable","Nodular"]},
+    {"label":"Morphology","code":"mo","type":"list","items":["No surface nodularity","Nodular"]},
     {"label":"Cirrhosis","code":"ci","type":"list","items":["No","Yes"]},
     {"label":"Ascites","code":"as","type":"list","items":["None","Trace","Small","Moderate","Massive"]},
     {"label":"CT number (HU)","code":"hu","type":"int"},
@@ -21,14 +21,15 @@
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
   {"label":"Biliary","prefix":"bi","fields":[
-    {"label":"Cholelithiasis","code":"gs","type":"list","items":["No","Yes"]},
-    {"label":"GB wall thickening","code":"wt","type":"list","items":["No","Yes"]},
-    {"label":"Pericholecystic fluid","code":"pf","type":"list","items":["No","Yes"]},
-    {"label":"Acute cholecystitis","code":"ac","type":"list","items":["No","Yes"]},
-    {"label":"Intrahepatic bil. dil.","code":"id", "type":"textarea"},
-    {"label":"Extrahepatic bil. dil.","code":"ed", "type":"list", "item":["No","Yes"]},
+    {"label":"Gallbladder","code":"gb","type":"enum","items":["Cholelithiasis","No cholelithiasis","Gallbladder wall thickening",
+      "No gallbladder wall thickening","Pericholecystic fluid","No pericholecystic fluid","Acute cholecystitis","No acute cholecystitis",
+      "Status post cholecystectomy"]},
+    {"label":"Bile ducts","code":"bd","type":"enum","items":["No intra or extrahepatic dilation",
+      "No intrahepatic dilation","No extrahepatic dilatation",
+      "No choledocolithiasis","Choledocolithiasis",
+      "Mild central intrahepatic dilation",
+      "Mild extrahepatic dilation"]},
     {"label":"CBD diameter","code":"cb", "type":"int"},
-    {"label":"Choledocolithiasis","code":"cd","type":"list","items":["No","Yes"]},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
   {"label":"Vasculature","prefix":"hv","width":"16em","fields":[
@@ -36,7 +37,7 @@
     {"label":"Portal veins", "code":"pv", "type":"textarea"},
     {"label":"MPV diameter", "code":"md", "type":"int"},
     {"label":"Hepatic veins", "code":"hv", "type":"textarea"},
-    {"label":"TIPS","code":"ti","type":"list","items":["Patent","Occluded"]},
+    {"label":"TIPS","code":"ti","type":"list","items":["Present","Patent","Occluded"]},
     {"label":"Varices","code":"va","type":"enum","items":["Submucosal esophageal","Paraesophageal","Gastric","Perigastric","Perisplenic","Porta hepatis"]},
     {"label":"Splenorenal shunt","code":"sr","type":"list","items":["No","Yes"]},
     {"label":"Recan. periumb. vein","code":"rp","type":"list","items":["No","Yes"]},
