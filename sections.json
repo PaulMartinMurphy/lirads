@@ -24,11 +24,11 @@
     {"label":"Gallbladder","code":"gb","type":"enum","items":["Cholelithiasis","No cholelithiasis","Gallbladder wall thickening",
       "No gallbladder wall thickening","Pericholecystic fluid","No pericholecystic fluid","Acute cholecystitis","No acute cholecystitis",
       "Status post cholecystectomy"]},
-    {"label":"Bile ducts","code":"bd","type":"enum","items":["No intra or extrahepatic dilation",
-      "No intrahepatic dilation","No extrahepatic dilatation",
+    {"label":"Bile ducts","code":"bd","type":"enum","items":["No intra or extrahepatic bile duct dilation",
+      "No intrahepatic bile duct dilation","No extrahepatic bile duct dilation",
       "No choledocolithiasis","Choledocolithiasis",
-      "Mild central intrahepatic dilation",
-      "Mild extrahepatic dilation"]},
+      "Mild central intrahepatic bile duct dilation",
+      "Mild extrahepatic bile duct dilation"]},
     {"label":"CBD diameter","code":"cb", "type":"int"},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
@@ -51,7 +51,7 @@
     {"label":"Series:Image","code":"sn","type":"text","w2field_type":"seriesimage"},
     {"label":"Size (mm x mm)","code":"sz","type":"sizexsize","prior_goto":"ps"},
     {"label":"Prior Size (mm x mm)","code":"ps","type":"sizexsize"},
-    {"label":"Stability","code":"gr","type":"list","items":["New since prior","Threshold growth","Subthreshold growth","Stable size","Smaller size","Not seen now"],"width":"8em","prior_goto":""},
+    {"label":"Stability","code":"gr","type":"list","items":["New since prior","Threshold growth","Subthreshold growth","Stable size","Smaller than prior","Not seen now"],"width":"8em","prior_goto":""},
     {"label":"Suggested stab.","code":"sg","type":"text","disabled":true,"width":"8em"},
     {"label":"APHE","code":"ah","type":"list","items":["Yes","No","New"]},
     {"label":"Washout","code":"wa","type":"list","items":["Yes","No","New"]},
@@ -59,7 +59,7 @@
     {"label":"Tumor in vein","code":"tv","type":"list","items":["Yes","No","New"]},
     {"label":"Non-HCC Malig.","code":"nm","type":"list","items":["Yes","No"]},
     {"label":"Ancillary features","code":"af","type":"enum","items":[
-      "Hepatobiliary phase hypointensity (MR)","Mild-moderate T2 hyperintensity","Restricted diffusion","Distinctive rim","Corona enhancement",
+      "Hepatobiliary phase hypointensity","Mild-moderate T2 hyperintensity","Restricted diffusion","Distinctive rim","Corona enhancement",
       "Mosaic architecture","Nodule-in-nodule architecture","Intra-lesional fat","Lesional iron sparing","Lesional fat sparing","Blood products",
       "Homogeneous marked T2 hyperintensity","Homogeneous marked T2 or T2* hypointensity","Hepatobiliary phase isointensity","Undistorted vessels",
       "Parallels blood pool enhancement"],"rotate":"0deg","width":"16em"},
@@ -83,17 +83,17 @@
     {"label":"Comments","code":"co","type":"text","rotate":"0deg","width":"16em"}
   ]},
   {"label":"Aggregate Observation","prefix":"oa","fields":[
-    {"label":"Category","code":"ca","type":"list","items":["Numerous", "Extensive"] },
     {"label":"Segment(s)","code":"se","type":"enum","items":["1","2","3","4a","4b","5","6","7","8"]},
     {"label":"Lobe(s)","code":"lo","type":"list","items":["Right lobe","Left lobe","Entire liver"]},
     {"label":"Size (mm x mm)","code":"sz","type":"sizexsize","prior_goto":"ps"},
     {"label":"Prior size (mm x mm)","code":"ps","type":"sizexsize"},
-    {"label":"Major features","code":"mf","type":"enum", "items":["APHE","Washout","Capsule","No APHE","No washout","No capsule"],"rotate":"0deg"},
+    {"label":"Major features","code":"mf","type":"enum", "items":["Arterial phase hyperenhancement","Washout","Capsule","No arterial phase hyperenhancement",
+      "No washout","No capsule"],"rotate":"0deg"},
     {"label":"Ancillary features","code":"af","type":"enum","items":[
-      "Hepatobiliary phase hypointensity (MR)","Mild-moderate T2 hyperintensity (MR)","Restricted diffusion (MR)","Distinctive rim","Corona enhancement",
-      "Mosaic architecture","Nodule-in-nodule architecture","Intra-lesional fat","Lesional iron sparing (MR)","Lesional fat sparing","Blood products",
-      "Homogeneous marked T2 hyperintensity (MR, benign feature)","Homogeneous marked T2 or T2* hypointensity (MR, benign feature)","Hepatobiliary phase isointensity (MR, benign feature)","Undistorted vessels (benign feature)",
-      "Parallels blood pool enhancement (benign feature)"]},
+      "Hepatobiliary phase hypointensity","Mild-moderate T2 hyperintensity","Restricted diffusion","Distinctive rim","Corona enhancement",
+      "Mosaic architecture","Nodule-in-nodule architecture","Intra-lesional fat","Lesional iron sparing","Lesional fat sparing","Blood products",
+      "Homogeneous marked T2 hyperintensity","Homogeneous marked T2 or T2* hypointensity","Hepatobiliary phase isointensity","Undistorted vessels",
+      "Parallels blood pool enhancement"]},
     {"label":"LI-RADS Category","code":"lr","type":"list","items":["LR-1","LR-2","LR-3","LR-4","LR-5","LR-5V","LR-M"]},
     {"label":"Comments","code":"co","type":"textarea"}
   ]},
@@ -111,7 +111,7 @@
   {"label":"Impression","prefix":"im","fields":[
     {"label":"Suggested T-stage","code":"st","type":"text","disabled":true},
     {"label":"T-stage","code":"ts","type":"list","items":["Not applicable","T1","T2","T3","T4a","T4b"]},
-    {"label":"Recommendations","code":"re","type":"combo","items":["Discussion at liver cancer group","Per hepatology","Per interventional radiology"],"prior_goto":""},
+    {"label":"Recommendations","code":"re","type":"combo","items":["Continued surveillance","Discussion at liver cancer group","Per hepatology","Per interventional radiology"],"prior_goto":""},
     {"label":"Additional impressions","code":"ad","type":"textarea","prior_goto":""}
   ]},
   {"label":"Feedback","prefix":"fe","fields":[

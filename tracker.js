@@ -41,7 +41,7 @@ function lirads_tracker_get_color_for_lrcat(lrcat) {
     return '#ff0000';
   } else if( lrcat === 'LR-5V' ) {
     return '#ff0000';
-  } else if( lrcat === 'LR-5M' ) {
+  } else if( lrcat === 'LR-M' ) {
     return '#820000';
   } else if( lrcat === 'Low' ) {
     return '#9900ff';
@@ -89,11 +89,8 @@ var global_summary_features = [
   {prefix:'oa', code:'lr', label:"Agg. LI-RADS"},
   {prefix:'oa', code:'lo', label:"Agg. location"},
   {prefix:'oa', code:'se', label:"Agg. segment"},
-  {prefix:'oa', code:'ca', label:"Agg. type"},
   {prefix:'oa', code:'sz', label:"Agg. size"},
   {prefix:'im', code:'ts',label:"Tumor stage"},
-  {prefix:'im', code:'su',label:"Summary"},
-  {prefix:'im', code:'di',label:"Discrepancy"},
   {prefix:'xx', code:'attending',label:"Attending"}
 ]; // global_lirads_features
 
