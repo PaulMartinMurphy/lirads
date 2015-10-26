@@ -325,7 +325,7 @@ function radlibs_render(json, update_form) {
 			"SCANNER: {{# te.fs }}{{ te.fs }} Tesla {{/ te.fs }}superconducting magnet\n" +
 			"COVERAGE: Abdomen\n" +
 			"IV CONTRAST: {{# te.vc }}{{ te.vc }} mL {{/ te.vc}}{{ te.cn}}{{^ te.cn }}Gadavist{{/ te.cn}}\n" +
-			"{{ #te.rc }}RATE: {{ te.rc }} mL/sec{{/te.rc}}\n" +
+			"{{ #te.rc }}RATE: {{ te.rc }} mL/sec\n{{/te.rc}}" +
 			"SEQUENCES: Multiplanar, multisequence MR images were acquired prior to and following contrast administration.\n" +
 			"{{# te.co }}COMMENTS: {{te.co }}\n{{/te.co}}" +
 			"\n\n";
